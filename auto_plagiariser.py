@@ -1,11 +1,13 @@
 from nltk.corpus import wordnet
 import nltk
 import re
+import random
+import sys
 
 # print("Downloading wordnet resources...")
 # nltk.download('wordnet')
 
-synonyms = []
+# synonyms = []
 
 
 def get_synonym(inputword):
@@ -14,9 +16,13 @@ def get_synonym(inputword):
         for syn in wordnet.synsets(inputword):
             for l in syn.lemmas():
                 if l.name() not in synonyms and l.name() is not inputword:
-                    synonyms.append(l.name())            
+                    synz = l.name()
+                    if "_" in synz:
+                        synz = synz.replace("_", " ")
+                    synonyms.append(synz)            
         try:
-            return((synonyms[-1]))
+            return random.choice(synonyms)
+            # return((synonyms[-1]))
         except:
             return inputword
     
@@ -27,14 +33,20 @@ def get_synonym(inputword):
     
 def read_file(inputfile):
     print("Reading", inputfile)
-    f = open(inputfile).read()
-    # plain_text = re.sub(r'[^\w]', ' ', f)
-    plain_text = f
-    individual_words = []
-    for word in plain_text.split():
-        # do something with word
-        individual_words.append(word)
-    return individual_words
+    try:
+        f = open(inputfile, encoding='utf-8').read()
+        t = re.sub(r'[^\w]', ' ', f)
+        plain_text = f
+        individual_words = []
+        for word in plain_text.split():
+            # do something with word
+            individual_words.append(word)
+        return individual_words
+    except Exception as e:
+        print("Error opening input file", inputfile)
+        print(e)
+        sys.exit()
+    # plain_tex
 
 
 def write_output(original_word, new_word, filename):
@@ -54,14 +66,21 @@ def replace_word(inword):
     return new_word
 
 
-filename = "quick.txt"
-        
-all_words = read_file(filename)
-for words in all_words:
-    syn = (get_synonym(words))
-    # write_output(words, syn, "output.txt")
-    write_output_pure(syn, filename + "_output.txt")
-    syn2 = (replace_word(words))
-    write_output_pure(syn, filename + "_output_b.txt")
+def main(filename):
+    all_words = read_file(filename)
+    for words in all_words:
+        syn = (get_synonym(words))
+        # write_output(words, syn, "output.txt")
+        write_output_pure(syn, filename + "_output.txt")
+        syn2 = (replace_word(words))
+        write_output_pure(syn, filename + "_output_b.txt")
 
-    print(words, syn, syn2)
+        print(words, syn, syn2)
+
+
+if len(sys.argv) > 1:
+    filename = sys.argv[1]
+    main(filename)
+else:
+    print("Specify an input document")
+    
