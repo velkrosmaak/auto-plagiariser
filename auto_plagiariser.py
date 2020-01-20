@@ -11,23 +11,27 @@ import sys
 
 
 def get_synonym(inputword):
-    synonyms = []
-    try: # try it, if there's an error just pass the inputword through
-        for syn in wordnet.synsets(inputword):
-            for l in syn.lemmas():
-                if l.name() not in synonyms and l.name() is not inputword:
-                    synz = l.name()
-                    if "_" in synz:
-                        synz = synz.replace("_", " ")
-                    synonyms.append(synz)            
-        try:
-            return random.choice(synonyms)
-            # return((synonyms[-1]))
-        except:
+    # ignore words shorter than 2 chars
+    if len(inputword) > 2:
+        synonyms = []
+        try: # try it, if there's an error just pass the inputword through
+            for syn in wordnet.synsets(inputword):
+                for l in syn.lemmas():
+                    if l.name() not in synonyms and l.name() is not inputword:
+                        synz = l.name()
+                        if "_" in synz:
+                            synz = synz.replace("_", " ")
+                        synonyms.append(synz)            
+            try:
+                return random.choice(synonyms)
+                # return((synonyms[-1]))
+            except:
+                return inputword
+        
+        except Exception as e:
+            print (e)
             return inputword
-    
-    except Exception as e:
-        print (e)
+    else:
         return inputword
     
     
