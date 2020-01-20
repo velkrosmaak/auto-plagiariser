@@ -53,6 +53,7 @@ def replace_word(inword):
     new_word = inword.replace(inword, get_synonym(inword))
     return new_word
 
+
 filename = "quick.txt"
         
 all_words = read_file(filename)
